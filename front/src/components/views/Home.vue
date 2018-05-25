@@ -94,9 +94,9 @@
         }
 
       },
-      login() {
+      fbLogin() {
         var that = this
-        FB.login(function (response) {
+        FB.fbLogin(function (response) {
           axios.post('/auth/facebook', {
             'access_token': response.authResponse.accessToken
           })
