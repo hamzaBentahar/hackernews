@@ -2,7 +2,7 @@
   <div>
     <div class="columns" style="margin-top: 20px">
       <div class="column is-offset-4 is-4">
-        <button @click="login" class="loginBtn loginFb">Login with facebook</button>
+        <button @click="fbLogin" class="loginBtn loginFb">Login with facebook</button>
       </div>
     </div>
   </div>
@@ -10,22 +10,22 @@
 
 <script>
   import axios from "axios"
-  import jwt from 'jsonwebtoken'
+  import {mapActions} from 'vuex'
 
   export default {
     name: "Login",
     methods: {
-      login() {
-        var that = this
+      ...mapActions([
+        'login'
+      ]),
+      fbLogin() {
+        let that = this
         FB.login(function (response) {
           axios.post('/auth/facebook', {
             'access_token': response.authResponse.accessToken
           })
-            .then((response) => {
-              console.log(response.data)
-              var token = jwt.decode(response.data)
-              console.log(token)
-              localStorage.setItem('token', response.data)
+            .then(response => {
+              that.login(response.data)
             })
         })
       }
@@ -49,6 +49,7 @@
     color: #FFF;
     cursor: pointer;
   }
+
   .loginBtn:before {
     content: "";
     box-sizing: border-box;
@@ -58,13 +59,14 @@
     width: 34px;
     height: 100%;
   }
+
   .loginBtn:focus {
     outline: none;
   }
-  .loginBtn:active {
-    box-shadow: inset 0 0 0 32px rgba(0,0,0,0.1);
-  }
 
+  .loginBtn:active {
+    box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.1);
+  }
 
   /* Facebook */
   .loginFb {
@@ -73,10 +75,12 @@
     /*font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;*/
     text-shadow: 0 -1px 0 #354C8C;
   }
+
   .loginFb:before {
     border-right: #364e92 1px solid;
     background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png') 6px 6px no-repeat;
   }
+
   .loginFb:hover,
   .loginFb:focus {
     background-color: #5B7BD5;

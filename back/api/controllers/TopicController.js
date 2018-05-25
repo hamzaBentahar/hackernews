@@ -20,9 +20,14 @@ module.exports = {
       'author': userId
     })
       .intercept(err => {
-        return res.status(403).send({success: false, message: 'invalid'})
+        return res.status(403).send({success: false, message: err.message})
       }).fetch()
-    // return res.json(createdTopic)
+    return res.json(createdTopic)
+  },
+
+  'index': async function(req, res){
+    var topics = await Topic.find()
+    return res.json(topics)
   }
 
 };

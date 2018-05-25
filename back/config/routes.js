@@ -58,6 +58,11 @@ module.exports.routes = {
     action: 'create'
   },
 
+  'GET /api/v1/topics' : {
+    controller: 'TopicController',
+    action: 'index'
+  },
+
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
   //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗

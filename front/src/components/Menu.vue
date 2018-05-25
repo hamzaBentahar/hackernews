@@ -9,10 +9,16 @@
           </div>
           <div id="navbarMenuHeroA" class="navbar-menu">
             <div class="navbar-end">
-              <router-link :to="{name: 'home'}" exact-active-class="is-active" tag="a" class="navbar-item">Home</router-link>
-              <router-link :to="{name: 'login'}" exact-active-class="is-active" tag="a" class="navbar-item">Login</router-link>
-              <router-link :to="{name: 'submitTopic'}" exact-active-class="is-active" tag="a" class="navbar-item">Submit</router-link>
-              <a href="#" class="navbar-item" @click.prevent="logout">Logout</a>
+              <router-link :to="{name: 'home'}" exact-active-class="is-active" tag="a" class="navbar-item">Home
+              </router-link>
+              <router-link :to="{name: 'submitTopic'}" exact-active-class="is-active" tag="a" class="navbar-item"
+                           v-if="this.isAuthenticated">Submit
+              </router-link>
+              <router-link :to="{name: 'login'}" exact-active-class="is-active" tag="a" class="navbar-item"
+                           v-if="!this.isAuthenticated">Login
+              </router-link>
+              <a href="#" class="navbar-item" @click.prevent="logout"
+                 v-if="this.isAuthenticated">Logout</a>
             </div>
           </div>
         </div>
@@ -22,13 +28,23 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+  import {mapActions} from 'vuex'
+
   export default {
     name: "vMenu",
+    created() {
+      console.log(this.$store.getters)
+    },
+    computed: {
+      ...mapGetters([
+        'isAuthenticated'
+      ])
+    },
     methods: {
-      logout(){
-        localStorage.removeItem('token')
-        console.log('token removed')
-      }
+      ...mapActions([
+        'logout'
+      ])
     }
   }
 </script>
