@@ -26,35 +26,56 @@ module.exports = {
   },
 
   'index': async function (req, res) {
-    const sort = req.param('sort')
+    const sort = req.param('sort') === 'recent' ? 'createdAt DESC' : 'rates DESC'
     const page = parseInt(req.param('page'))
     const perPage = 50
-    var topics = await Topic.find({limit: 50, skip: (page - 1) * perPage}).sort('createdAt DESC')
     const total = await Topic.count()
     const pageCount = Math.ceil(total / perPage)
 
-    let nextPage = page + 1
-    if (nextPage > pageCount){
-      nextPage = false
-    }
-    let previousPage = page - 1
-    if (previousPage < 1){
-      previousPage = false
+    var topics = await Topic.find({limit: 50, skip: (page - 1) * perPage}).sort(sort)
+    return res.send({
+      message: 'success',
+      items: topics,
+      meta: {
+        page,
+        perPage,
+        pageCount,
+        total,
+        nextPage: page + 1 > pageCount ? false : page + 1,
+        previousPage:  page - 1 < 1 ? false : page - 1
+      }
+    })
+  },
+
+  'upvote': async function(req, res){
+    const userId = jwt.verify(req.headers['x-access-token'], sails.config.constant.secretToken).userId
+    const topic = await Topic.findOne({
+      id: req.param('id')
+    })
+
+    const upvote = await Upvote.findOne({
+      user: userId,
+      topic: req.param('id')
+    })
+
+    if (upvote !== undefined){
+      return res.status(403).send('You already upvoted this post')
     }
 
-    let data = {
-      message: 'success',
-    }
-    data.items = topics
-    data.meta = {
-      page,
-      perPage,
-      pageCount,
-      total,
-      nextPage,
-      previousPage
-    }
-    return res.send(data)
+    let incrementedRate = topic.rates + 1
+
+    await Topic.update({
+      id: req.param('id')
+    }).set({
+      rates: incrementedRate
+    })
+
+    await Upvote.create({
+      user: userId,
+      topic: req.param('id')
+    })
+
+    res.send(incrementedRate)
   }
 
 };

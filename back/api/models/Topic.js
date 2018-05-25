@@ -20,6 +20,10 @@ module.exports = {
     content: {
       type: 'json'
     },
+    rates: {
+      type: 'number',
+      defaultsTo: 0
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
@@ -33,6 +37,16 @@ module.exports = {
     author: {
       model: 'user',
       required: true
+    },
+
+    comments: {
+      collection: 'comment',
+      via: 'topic'
+    },
+
+    upvotes: {
+      collection: 'upvote',
+      via: 'topic'
     }
   },
 

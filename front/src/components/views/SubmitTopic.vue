@@ -48,7 +48,6 @@
     },
     methods: {
       submit(){
-        console.log(this.submitForm)
         axios.post('/topic', this.submitForm,
           {
             headers: {'x-access-token': localStorage.getItem('token')}
