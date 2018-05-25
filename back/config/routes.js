@@ -68,6 +68,11 @@ module.exports.routes = {
     action: 'upvote'
   },
 
+  'GET /api/v1/topic/:id' : {
+    controller: 'TopicController',
+    action: 'show'
+  }
+
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
   //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗

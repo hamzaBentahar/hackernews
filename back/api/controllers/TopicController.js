@@ -75,7 +75,11 @@ module.exports = {
       topic: req.param('id')
     })
 
-    res.send(incrementedRate)
+    res.status(200).send(incrementedRate.toString())
+  },
+
+  'show': async function(req, res){
+    const topicId = req.param('id')
   }
 
 };

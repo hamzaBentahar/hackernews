@@ -58,15 +58,17 @@
     },
     methods: {
       upvote(topic){
+        console.log(this.topics)
+        console.log(this.topics.items.findIndex(element => element.id === topic))
         axios.post('/topic/upvote', {id: topic} , {headers: {'x-access-token': localStorage.getItem('token')}})
           .then(response => {
             // redirect to topic page
-            console.log(response)
+            console.log(response.data)
+            this.topics.items[this.topics.items.findIndex(element => element.id === topic)].rates = response.data
           })
           .catch(response => {
             console.log(response.response.data)
           })
-        // console.log(moment(topic.createdAt).fromNow())
       },
       topicNb(index){
         return (index + 1) + this.topics.meta.perPage * (this.params.page - 1)
