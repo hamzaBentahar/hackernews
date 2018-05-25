@@ -2,55 +2,29 @@
   <div class="hello">
     <div class="columns">
       <div class="column is-10 is-offset-1">
-        <table class="table is-striped is-hoverable is-fullwidth">
+        <table v-if="topics" class="table is-striped is-hoverable is-fullwidth" ref="topics">
           <thead>
           <tr>
-            <th colspan="2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus at earum expedita laborum, magnam nostrum.</th>
+            <th colspan="2">
+              Sort By: <a href="#" @click.prevent="changeSort('recent')">Most Recent</a> - <a href="#" @click.prevent="changeSort('upvotes')">Most Rated</a>
+            </th>
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
-          <tr>
-            <td>Lorem ipsum dolor sit amet.</td>
-            <td>Lorem ipsum dolor sit amet.</td>
-          </tr>
+            <tr v-for="(topic, index) in topics.items">
+              <td width="70px">{{ topicNb(index) }}. <a href="#">↑</a> </td>
+              <td>{{ topic.title }}</td>
+            </tr>
           </tbody>
         </table>
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+          <a class="pagination-previous" :disabled="!topics.meta.previousPage" @click="changePage(topics.meta.previousPage)" v-if="topics">Previous</a>
+          <a class="pagination-next" :disabled="!topics.meta.nextPage" @click="changePage(topics.meta.nextPage)" v-if="topics">Next page</a>
+
+          <ul class="pagination-list">
+            <li>{{ params.page }}</li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -62,51 +36,38 @@
 
   export default {
     name: 'Home',
-    created() {
-      Event.$on('fbInit', () => {
-        var that = this
-        FB.getLoginStatus(function (response) {
-          console.log(that.isLogged(response.status))
-        })
-      })
-    },
     mounted() {
+      this.getTopics()
     },
     data() {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        topics: null,
+        params: {
+          sort: 'recent',
+          page: 1
+        }
       }
     },
     methods: {
-      isLogged(status) {
-        switch (status) {
-          case 'connected':
-            return "Connected user"
-            break
-          case 'not_authorized':
-            return "Not authorized"
-            break
-          case 'unknown':
-            return 'Not logged in'
-            break
-          default:
-            return 'error'
-        }
-
+      topicNb(index){
+        return (index + 1) + this.topics.meta.perPage * (this.params.page - 1)
       },
-      fbLogin() {
-        var that = this
-        FB.fbLogin(function (response) {
-          axios.post('/auth/facebook', {
-            'access_token': response.authResponse.accessToken
-          })
-            .then((response) => {
-              console.log(response.data)
-              var token = jwt.decode(response.data)
-              console.log(token)
-              localStorage.setItem('token', response.data)
-            })
+      changePage(pageNb){
+        this.params.page = pageNb
+        this.getTopics()
+        this.$nextTick(() => {
+          this.$refs.topics.scrollTop = 0
         })
+      },
+      changeSort(sort){
+        this.params.sort = sort
+      },
+      getTopics(){
+        console.log(this.topics)
+        axios.get('/topics', {params: this.params})
+          .then(response => {
+            this.topics = response.data
+          })
       }
     }
   }
