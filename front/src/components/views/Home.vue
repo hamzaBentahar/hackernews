@@ -13,13 +13,16 @@
           <tbody>
             <tr v-for="(topic, index) in topics.items">
               <td width="70px">{{ topicNb(index) }}. <a href="#" @click.prevent="upvote(topic.id)">↑</a> </td>
-              <td>{{ topic.title }}<br><small>{{ topic.rates }}</small></td>
+              <td>
+                {{ topic.title }}<br>
+                <small class="is-size-7">{{ topic.rates }} points - {{ topic.createdAt | timeFromNow}}</small>
+              </td>
             </tr>
           </tbody>
         </table>
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
           <a class="pagination-previous" :disabled="!topics.meta.previousPage" @click="changePage(topics.meta.previousPage)" v-if="topics">Previous</a>
-          <a class="pagination-next" :disabled="!topics.meta.nextPage" @click="changePage(topics.meta.nextPage)" v-if="topics">Next page</a>
+          <a class="pagination-next" :disabled="!topics.meta.nextPage" @click="changePage(topics.meta.nextPage)" v-if="topics">Next</a>
 
           <ul class="pagination-list">
             <li>{{ params.page }}</li>
@@ -32,7 +35,7 @@
 
 <script>
   import axios from "axios"
-  import jwt from 'jsonwebtoken'
+  import moment from 'moment'
 
   export default {
     name: 'Home',
@@ -48,23 +51,22 @@
         }
       }
     },
+    filters: {
+      timeFromNow(value){
+        return moment(value).fromNow()
+      }
+    },
     methods: {
       upvote(topic){
-        axios.post('/topic/upvote',
-          {
-            id: topic
-          },
-          {
-            headers: {'x-access-token': localStorage.getItem('token')}
-          })
+        axios.post('/topic/upvote', {id: topic} , {headers: {'x-access-token': localStorage.getItem('token')}})
           .then(response => {
             // redirect to topic page
             console.log(response)
           })
           .catch(response => {
             console.log(response.response.data)
-
           })
+        // console.log(moment(topic.createdAt).fromNow())
       },
       topicNb(index){
         return (index + 1) + this.topics.meta.perPage * (this.params.page - 1)
