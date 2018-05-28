@@ -15,7 +15,7 @@
               <td width="70px">{{ topicNb(index) }}.<upvote :topic-id="topic.id"></upvote> </td>
               <td>
                 <router-link :to="{name: 'topic', params: {id: topic.id }}">{{ topic.title }}</router-link><br>
-                <small class="is-size-7">{{ topic.rates }} points - {{ topic.createdAt | timeFromNow}}</small>
+                <small class="is-size-7">{{ topic.rates }} points - {{ fullName(topic.author.firstName, topic.author.lastName) }} - {{ topic.createdAt | timeFromNow}}</small>
               </td>
             </tr>
           </tbody>
@@ -78,6 +78,9 @@
             this.$toasted.show('You have already upvoted this topic')
             console.log(response.response.data)
           })
+      },
+      fullName(firstName, lastName){
+        return firstName + ' ' + lastName
       },
       topicNb(index){
         return (index + 1) + this.topics.meta.perPage * (this.params.page - 1)

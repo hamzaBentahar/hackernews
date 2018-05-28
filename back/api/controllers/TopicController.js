@@ -32,7 +32,7 @@ module.exports = {
     const total = await Topic.count()
     const pageCount = Math.ceil(total / perPage)
 
-    var topics = await Topic.find({limit: 50, skip: (page - 1) * perPage}).sort(sort)
+    var topics = await Topic.find({limit: 50, skip: (page - 1) * perPage}).populate('author').sort(sort)
     return res.send({
       message: 'success',
       items: topics,
@@ -81,7 +81,7 @@ module.exports = {
   'show': async function(req, res){
     const topic = await Topic.findOne({
       id: req.param('id')
-    })
+    }).populate('author')
     if (topic === null || topic === undefined) {
       return res.status(403).send({message: 'The topic '+ req.param('id')+ ' does not exist'})
     }
