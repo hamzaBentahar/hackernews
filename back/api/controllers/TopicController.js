@@ -27,7 +27,7 @@ module.exports = {
 
   'index': async function (req, res) {
     const sort = req.param('sort') === 'recent' ? 'createdAt DESC' : 'rates DESC'
-    const page = parseInt(req.param('page'))
+    const page = Number.isInteger(parseInt(req.param('page'))) ? parseInt(req.param('page')) : 1
     const perPage = 50
     const total = await Topic.count()
     const pageCount = Math.ceil(total / perPage)

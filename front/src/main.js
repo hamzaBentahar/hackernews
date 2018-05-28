@@ -47,12 +47,10 @@ Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   if (to.meta.isAuthenticated && !store.getters.isAuthenticated){
-    console.log("get out")
     return next(false)
   } else if (to.meta.isNotAuthenticated && store.getters.isAuthenticated){
     return next(false)
   }
-  console.log("Stay")
   return next()
 })
 
