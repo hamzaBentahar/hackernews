@@ -1,21 +1,33 @@
 # hackernews
 
-> A Vue.js project
+> A project with vuejs and sailsjs. MongoDb as a database.
 
 ## Build Setup
 
+To make the web application work in local:
+
 ``` bash
+
+# clone project
+git clone https://github.com/hamzaBentahar/hackernews.git
+
+# Go to front folder
+cd front
+
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
 
-# build for production with minification
-npm run build
+# Open a new cmd and navigate to the back folder
+cd hackernews/back
 
-# build for production and view the bundle analyzer report
-npm run build --report
+# install dependencies
+npm install
+
+# run backend
+sails lift
+
+
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
