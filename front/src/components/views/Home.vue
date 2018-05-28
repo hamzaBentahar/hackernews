@@ -45,7 +45,8 @@
     mounted() {
       this.getTopics()
       Event.$on('upvotedTopic', response => {
-        this.topics.items[this.topics.items.findIndex(element => element.id === response.topicId)].rates = response.totalUpvotes
+        let topic = this.topics.items[this.topics.items.findIndex(element => element.id === response.topicId)]
+        topic.rates = response.totalUpvotes
       })
     },
     data() {

@@ -11,7 +11,6 @@
       upvote(){
         axios.post('/topic/upvote', {id: this.topicId} , {headers: {'x-access-token': localStorage.getItem('token')}})
           .then(response => {
-            // this.topics.items[this.topics.items.findIndex(element => element.id === topic)].rates = response.data
             Event.$emit('upvotedTopic', {topicId: this.topicId, totalUpvotes: response.data})
           })
           .catch(response => {

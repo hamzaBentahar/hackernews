@@ -71,8 +71,12 @@ module.exports.routes = {
   'GET /api/v1/topic/:id' : {
     controller: 'TopicController',
     action: 'show'
-  }
+  },
 
+  'POST /api/v1/comment/:topic' : {
+    controller: 'CommentController',
+    action: 'create'
+  },
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
   //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗

@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 /**
  * CommentController
  *
@@ -6,7 +8,34 @@
  */
 
 module.exports = {
-  
+
+  'create': async function(req, res){
+    const userId = jwt.verify(req.headers['x-access-token'], sails.config.constant.secretToken).userId
+
+    var user = await User.find({id: userId})
+    if (user.length === 0) {
+      return res.status(403).send({success: false, message: 'User does not exist'})
+    }
+
+    const topic = await Topic.findOne({
+      id: req.param('topic')
+    })
+
+    if (topic === undefined) {
+      return res.status(403).send({success: false, message: 'Topic does not exist'})
+    }
+
+    var createdComment = await Comment.create({
+      'topic': req.param('topic'),
+      'content': req.param('content'),
+      'user': userId
+    })
+      .intercept(err => {
+        return res.status(403).send({success: false, message: err.message})
+      }).fetch()
+    return res.json(createdComment)
+  }
+
 
 };
 

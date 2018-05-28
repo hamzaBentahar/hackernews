@@ -3,16 +3,16 @@
       <div v-if="topic !== null">
         <article class="message is-dark">
           <div class="message-header">
-            <p class="is-pulled-right"><upvote :topic-id="id"></upvote> {{ topic.title}} ({{ this.topic.rates }} points - minutes ago)</p>
+            <p class="is-pulled-right"><upvote :topic-id="id"></upvote> {{ topic.title}} ({{ this.topic.rates }} points - {{ topic.createdAt | timeFromNow}})</p>
           </div>
           <div class="message-body">
             {{ topic.content }}
           </div>
         </article>
-        <form>
+        <form @submit.prevent="submitComment">
           <div class="columns">
             <div class="column is-half">
-              <textarea class="textarea" placeholder="Write your comment here"></textarea>
+              <textarea class="textarea" placeholder="Write your comment here" v-model="comment"></textarea>
               <br>
               <button class="button is-primary is-pulled-right">Submit</button>
             </div>
@@ -34,13 +34,15 @@
 <script>
   import axios from 'axios'
   import upvote from '../upvote'
+  import moment from 'moment'
 
   export default {
     name: "Topic",
     props: ['id'],
     data(){
       return {
-        topic: null
+        topic: null,
+        comment: ''
       }
     },
     mounted(){
@@ -56,6 +58,11 @@
     },
     created(){
       this.info()
+    },
+    filters: {
+      timeFromNow(value){
+        return moment(value).fromNow()
+      }
     },
     methods: {
       info(){
@@ -74,6 +81,19 @@
           console.log("Not integer")
           // redirect to list of topics
         }
+      },
+      submitComment(){
+        axios.post('/comment/'+this.id, {content: this.comment},
+          {
+            headers: {'x-access-token': localStorage.getItem('token')}
+          })
+          .then(response => {
+            // redirect to topic page
+            console.log(response)
+          })
+          .catch(response => {
+            console.log(response)
+          })
       }
     }
   }
