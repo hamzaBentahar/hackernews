@@ -3,7 +3,7 @@
       <div v-if="topic !== null">
         <article class="message is-dark">
           <div class="message-header">
-            <p class="is-pulled-right">↑ {{ topic.title}} (0 points - mminutes ago)</p>
+            <p class="is-pulled-right"><upvote :topic-id="id"></upvote> {{ topic.title}} ({{ this.topic.rates }} points - minutes ago)</p>
           </div>
           <div class="message-body">
             {{ topic.content }}
@@ -33,6 +33,8 @@
 
 <script>
   import axios from 'axios'
+  import upvote from '../upvote'
+
   export default {
     name: "Topic",
     props: ['id'],
@@ -41,8 +43,16 @@
         topic: null
       }
     },
+    mounted(){
+      Event.$on('upvotedTopic', response => {
+        this.topic.rates = response.totalUpvotes
+      })
+    },
     watch: {
       '$route': 'info'
+    },
+    components: {
+      upvote
     },
     created(){
       this.info()

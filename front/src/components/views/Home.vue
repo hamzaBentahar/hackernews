@@ -12,7 +12,7 @@
           </thead>
           <tbody>
             <tr v-for="(topic, index) in topics.items">
-              <td width="70px">{{ topicNb(index) }}. <a href="#" @click.prevent="upvote(topic.id)">↑</a> </td>
+              <td width="70px">{{ topicNb(index) }}.<upvote :topic-id="topic.id"></upvote> </td>
               <td>
                 <router-link :to="{name: 'topic', params: {id: topic.id }}">{{ topic.title }}</router-link><br>
                 <small class="is-size-7">{{ topic.rates }} points - {{ topic.createdAt | timeFromNow}}</small>
@@ -35,11 +35,18 @@
 <script>
   import axios from "axios"
   import moment from 'moment'
+  import upvote from '../upvote'
 
   export default {
     name: 'Home',
+    components: {
+      upvote
+    },
     mounted() {
       this.getTopics()
+      Event.$on('upvotedTopic', response => {
+        this.topics.items[this.topics.items.findIndex(element => element.id === response.topicId)].rates = response.totalUpvotes
+      })
     },
     data() {
       return {
