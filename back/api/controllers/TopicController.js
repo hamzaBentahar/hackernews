@@ -79,7 +79,13 @@ module.exports = {
   },
 
   'show': async function(req, res){
-    const topicId = req.param('id')
+    const topic = await Topic.findOne({
+      id: req.param('id')
+    })
+    if (topic === null || topic === undefined) {
+      return res.status(403).send({message: 'The topic '+ req.param('id')+ ' does not exist'})
+    }
+    return res.status(200).send({topic})
   }
 
 };

@@ -27,7 +27,8 @@ export default new Router({
     {
       path: '/topic/:id',
       name: 'topic',
-      component: Topic
+      component: Topic,
+      props: true
     }
   ]
 })

@@ -14,7 +14,7 @@
             <tr v-for="(topic, index) in topics.items">
               <td width="70px">{{ topicNb(index) }}. <a href="#" @click.prevent="upvote(topic.id)">↑</a> </td>
               <td>
-                {{ topic.title }}<br>
+                <router-link :to="{name: 'topic', params: {id: topic.id }}">{{ topic.title }}</router-link><br>
                 <small class="is-size-7">{{ topic.rates }} points - {{ topic.createdAt | timeFromNow}}</small>
               </td>
             </tr>
