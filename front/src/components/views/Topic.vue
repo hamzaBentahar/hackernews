@@ -19,12 +19,12 @@
           </div>
         </form>
         <hr>
-        <article class="message is-dark">
+        <article class="message is-dark" v-for="comment in comments">
           <div class="message-header">
-            <p class="is-pulled-right">Comment title</p>
+            <p class="is-pulled-right">{{ fullName(comment.user.firstName, comment.user.lastName) }} - {{ comment.createdAt | timeFromNow}}</p>
           </div>
           <div class="message-body">
-            Comment topic
+            {{ comment.content }}
           </div>
         </article>
       </div>
@@ -42,7 +42,8 @@
     data(){
       return {
         topic: null,
-        comment: ''
+        comment: '',
+        comments: []
       }
     },
     mounted(){
@@ -65,12 +66,16 @@
       }
     },
     methods: {
+      fullName(firstName, lastName){
+        return firstName + ' ' + lastName
+      },
       info(){
         if (Number.isInteger(parseInt(this.id))){
           axios.get('/topic/'+this.id)
             .then(response => {
               console.log(response)
               this.topic = response.data.topic
+              this.commentList()
             })
             .catch(response => {
               // redirect to list of topics
@@ -90,6 +95,17 @@
           .then(response => {
             // redirect to topic page
             console.log(response)
+            this.comments.unshift(response.data)
+          })
+          .catch(response => {
+            console.log(response)
+          })
+      },
+      commentList(){
+        axios.get('/comments/'+this.id)
+          .then(response => {
+            console.log(response)
+            this.comments = response.data
           })
           .catch(response => {
             console.log(response)

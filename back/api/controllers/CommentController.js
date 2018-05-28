@@ -34,6 +34,13 @@ module.exports = {
         return res.status(403).send({success: false, message: err.message})
       }).fetch()
     return res.json(createdComment)
+  },
+
+  'index': async function(req, res){
+    let comments = await Comment.find({
+      topic: req.param('topic')
+    }).populate('user').sort('createdAt DESC')
+    return res.status(200).send(comments)
   }
 
 
