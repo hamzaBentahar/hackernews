@@ -9,7 +9,7 @@
             {{ topic.content }}
           </div>
         </article>
-        <form @submit.prevent="submitComment">
+        <form @submit.prevent="submitComment" v-if="this.isAuthenticated">
           <div class="columns">
             <div class="column is-half">
               <textarea class="textarea" placeholder="Write your comment here" v-model="comment"></textarea>
@@ -22,7 +22,10 @@
         <h2>{{ comments.length }} comments</h2>
         <br>
         <div v-if="comments.length === 0">
-          Be the first to comment
+          Be the first to comment.
+          <span v-if="!this.isAuthenticated">
+            <router-link to="/login">Login</router-link>
+          </span>
         </div>
         <article class="message is-dark" v-for="comment in comments" v-else>
           <div class="message-header">
@@ -40,6 +43,7 @@
   import axios from 'axios'
   import upvote from '../upvote'
   import moment from 'moment'
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     name: "Topic",
@@ -64,11 +68,17 @@
     },
     created(){
       this.info()
+      console.log(this.isAuthenticated)
     },
     filters: {
       timeFromNow(value){
         return moment(value).fromNow()
       }
+    },
+    computed: {
+      ...mapGetters([
+        'isAuthenticated'
+      ])
     },
     methods: {
       fullName(firstName, lastName){

@@ -7,7 +7,7 @@ import Topic from "@/components/views/Topic"
 
 Vue.use(Router)
 
-export default new Router({
+export const router = new Router({
   routes: [
     {
       path: '/',
@@ -17,12 +17,18 @@ export default new Router({
     {
       path: '/Login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: {
+        isNotAuthenticated: true
+      }
     },
     {
       path: '/submit',
       name: 'submitTopic',
-      component: SubmitTopic
+      component: SubmitTopic,
+      meta: {
+        isAuthenticated: true
+      }
     },
     {
       path: '/topic/:id',

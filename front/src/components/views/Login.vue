@@ -11,6 +11,7 @@
 <script>
   import axios from "axios"
   import {mapActions} from 'vuex'
+  import {router} from "../../router";
 
   export default {
     name: "Login",
@@ -27,6 +28,7 @@
             .then(response => {
               that.login(response.data)
               that.$toasted.show('You have been logged in successfully')
+              router.go(-1)
             })
         })
       }

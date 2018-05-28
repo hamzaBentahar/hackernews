@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import jwt from 'jsonwebtoken'
+import {router} from "./router";
 
 Vue.use(Vuex)
 
@@ -26,6 +27,9 @@ export const store = new Vuex.Store({
       localStorage.removeItem('token')
       state.user = false
       Vue.toasted.show('You have been logged out')
+      if (router.history.current.meta.isAuthenticated){
+        router.push('/')
+      }
     }
   },
   actions: {

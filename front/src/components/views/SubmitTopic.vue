@@ -56,6 +56,7 @@
             this.$toasted.show('Topic created!')
             // redirect to topic page
             console.log(response)
+            this.$router.push({name: 'topic', params: {id: response.data.id }})
           })
           .catch(response => {
             this.errors = []
