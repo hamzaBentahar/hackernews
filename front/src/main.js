@@ -5,9 +5,15 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import {store} from './store'
+import Toasted from 'vue-toasted'
+
 require('./assets/sass/main.scss')
 
 axios.defaults.baseURL = "http://localhost:1337/api/v1"
+
+Vue.use(Toasted, {
+  duration: 5000
+})
 Vue.use(axios)
 
 window.Event = new Vue()

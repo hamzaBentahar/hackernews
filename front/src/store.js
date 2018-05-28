@@ -25,6 +25,7 @@ export const store = new Vuex.Store({
     logout(state) {
       localStorage.removeItem('token')
       state.user = false
+      Vue.toasted.show('You have been logged out')
     }
   },
   actions: {

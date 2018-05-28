@@ -26,6 +26,7 @@
           })
             .then(response => {
               that.login(response.data)
+              that.$toasted.show('You have been logged in successfully')
             })
         })
       }

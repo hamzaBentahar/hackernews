@@ -20,10 +20,9 @@
             </tr>
           </tbody>
         </table>
-        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination" v-if="displayPagination">
           <a class="pagination-previous" :disabled="!topics.meta.previousPage" @click="changePage(topics.meta.previousPage)" v-if="topics">Previous</a>
           <a class="pagination-next" :disabled="!topics.meta.nextPage" @click="changePage(topics.meta.nextPage)" v-if="topics">Next</a>
-
           <ul class="pagination-list">
             <li>{{ params.page }}</li>
           </ul>
@@ -56,17 +55,19 @@
         return moment(value).fromNow()
       }
     },
+    computed: {
+      displayPagination(){
+        return this.topics !== null && this.topics.meta > 1;
+      }
+    },
     methods: {
       upvote(topic){
-        console.log(this.topics)
-        console.log(this.topics.items.findIndex(element => element.id === topic))
         axios.post('/topic/upvote', {id: topic} , {headers: {'x-access-token': localStorage.getItem('token')}})
           .then(response => {
-            // redirect to topic page
-            console.log(response.data)
             this.topics.items[this.topics.items.findIndex(element => element.id === topic)].rates = response.data
           })
           .catch(response => {
+            this.$toasted.show('You have already upvoted this topic')
             console.log(response.response.data)
           })
       },

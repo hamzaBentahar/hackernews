@@ -53,6 +53,7 @@
             headers: {'x-access-token': localStorage.getItem('token')}
           })
           .then(response => {
+            this.$toasted.show('Topic created!')
             // redirect to topic page
             console.log(response)
           })
