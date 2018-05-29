@@ -48,23 +48,22 @@
     },
     methods: {
       submit(){
+        // submit topic
         axios.post('/topic', this.submitForm,
           {
             headers: {'x-access-token': localStorage.getItem('token')}
           })
           .then(response => {
-            this.$toasted.show('Topic created!')
-            // redirect to topic page
-            console.log(response)
-            this.$router.push({name: 'topic', params: {id: response.data.id }})
+            this.$toasted.show('Topic created!') // Show notification
+            this.$router.push({name: 'topic', params: {id: response.data.id }}) // redirect to topic page
           })
           .catch(response => {
             this.errors = []
-            this.errors.push(response.response.data.message)
+            this.errors.push(response.response.data.message) // display errors
           })
       },
       deleteNotification(index){
-        this.errors.splice(index, 1)
+        this.errors.splice(index, 1) // Delete notification
       }
     }
   }

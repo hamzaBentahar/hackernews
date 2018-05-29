@@ -6,8 +6,8 @@
           <thead>
           <tr>
             <th colspan="2">
-              Sort By: <a href="#" @click.prevent="changeSort('recent')">Most Recent</a> - <a href="#"
-                                                                                              @click.prevent="changeSort('rates')">Most
+              Sort By: <a href="#" @click.prevent="changeSort('recent')">Most Recent</a> -
+              <a href="#" @click.prevent="changeSort('rates')">Most
               Rated</a>
             </th>
           </tr>
@@ -20,8 +20,8 @@
             <td>
               <router-link :to="{name: 'topic', params: {id: topic.id }}">{{ topic.title }}</router-link>
               <br>
-              <small class="is-size-7">{{ topic.rates }} points - {{ fullName(topic.author.firstName,
-                topic.author.lastName) }} - {{ topic.createdAt | timeFromNow}}
+              <small class="is-size-7">{{ topic.rates }} points -
+                {{ fullName(topic.author.firstName, topic.author.lastName) }} - {{ topic.createdAt | timeFromNow}}
               </small>
             </td>
           </tr>
@@ -54,8 +54,7 @@
     mounted() {
       this.getTopics()
       Event.$on('upvotedTopic', response => {
-        let topic = this.topics.items[this.topics.items.findIndex(element => element.id === response.topicId)]
-        topic.rates = response.totalUpvotes
+        this.topics.items.find(element => element.id === response.topicId).rates = response.totalUpvotes
       })
     },
     data() {
@@ -72,21 +71,9 @@
         return moment(value).fromNow()
       }
     },
-    computed: {
+    methods: {
       displayPagination() {
         return this.topics !== null && this.topics.meta > 1;
-      }
-    },
-    methods: {
-      upvote(topic) {
-        axios.post('/topic/upvote', {id: topic}, {headers: {'x-access-token': localStorage.getItem('token')}})
-          .then(response => {
-            this.topics.items[this.topics.items.findIndex(element => element.id === topic)].rates = response.data
-          })
-          .catch(response => {
-            this.$toasted.show('You have already upvoted this topic')
-            console.log(response.response.data)
-          })
       },
       fullName(firstName, lastName) {
         return firstName + ' ' + lastName

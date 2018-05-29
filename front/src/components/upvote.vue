@@ -15,7 +15,6 @@
           })
           .catch(response => {
             this.$toasted.show('You have already upvoted this topic')
-            console.log(response.response.data)
           })
       }
     }

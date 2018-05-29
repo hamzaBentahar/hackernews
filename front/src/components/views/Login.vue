@@ -29,19 +29,20 @@
       ]),
       fbLogin() {
         let that = this
+        // Get access token
         FB.login(function (response) {
+          // send access token to the backend api
           axios.post('/auth/facebook', {
             'access_token': response.authResponse.accessToken
           })
             .then(response => {
-              that.login(response.data)
-              that.$toasted.show('You have been logged in successfully')
-              router.go(-1)
+              that.login(response.data) // store the jwt in the local storage
+              that.$toasted.show('You have been logged in successfully') // Display notification
+              router.go(-1) // Go to previous page in the app
             })
             .catch(response => {
               that.errors = []
-              that.errors.push(response.response.data.message)
-              console.log(that.errors)
+              that.errors.push(response.response.data.message) // Display errors
             })
         })
       }
