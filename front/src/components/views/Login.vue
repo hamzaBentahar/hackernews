@@ -2,7 +2,10 @@
   <div>
     <div class="columns" style="margin-top: 20px">
       <div class="column is-offset-4 is-4">
-        <button @click="fbLogin" class="loginBtn loginFb">Login with facebook</button>
+        <div class="notification is-danger" v-for="error in errors">
+          {{ error }}
+        </div>
+        <button @click="fbLogin" class="loginBtn loginFb top-center">Login with facebook</button>
       </div>
     </div>
   </div>
@@ -15,6 +18,11 @@
 
   export default {
     name: "Login",
+    data(){
+      return {
+        errors: []
+      }
+    },
     methods: {
       ...mapActions([
         'login'
@@ -29,6 +37,11 @@
               that.login(response.data)
               that.$toasted.show('You have been logged in successfully')
               router.go(-1)
+            })
+            .catch(response => {
+              that.errors = []
+              that.errors.push(response.response.data.message)
+              console.log(that.errors)
             })
         })
       }

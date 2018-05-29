@@ -28,9 +28,8 @@ module.exports = {
   socialAuth: function (req, res) {
     fb.setAccessToken(req.param('access_token'))
     fb.api('me', {fields: ['id', 'name', 'email', 'first_name', 'last_name']}, function (response) {
-      if (!response || response.error) {
-        console.log(!response ? 'error occurred' : response.error);
-        return;
+      if (!response || response.error || response.email === undefined) {
+        return res.status(403).send({status: 'error', message: 'An error has occured'})
       }
       User.findOrCreate(
         {

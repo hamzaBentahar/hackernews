@@ -32,9 +32,6 @@
 
   export default {
     name: "vMenu",
-    created() {
-      console.log(this.$store.getters)
-    },
     computed: {
       ...mapGetters([
         'isAuthenticated'
@@ -47,7 +44,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
