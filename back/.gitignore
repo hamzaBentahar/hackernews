@@ -131,3 +131,5 @@ lib-cov
 *.pid
 config/constant.js
 
+.idea/
+
