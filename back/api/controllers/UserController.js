@@ -12,18 +12,20 @@ var Facebook = require('fb').Facebook,
 module.exports = {
   socialAuth: function (req, res) {
     fb.setAccessToken(req.param('access_token')) // Get the facebook access token for the user and store it in fb variable
-    // facebook api call with the necessary attributes
+    // facebook api call with the necessary fields
     fb.api('me', {fields: ['id', 'name', 'email', 'first_name', 'last_name']}, response => {
-      //
-      if (!response || response.error) {
-        return res.status(403).send({status: 'error', message: 'An error has occured'})
-      } else if (response.email === undefined){
+      // Make sure that the user give his email
+      if (response.email === undefined) {
         return res.status(403).send({status: 'error', message: 'The email address is required'})
+      } else if (!response || response.error) {
+        return res.status(403).send({status: 'error', message: 'An error has occured'})
       }
+      // Search user by email
+      // If found, continue
+      // else create a new one and continue
       User.findOrCreate(
         {
-          'email': response.email,
-          'facebookId': response.id
+          'email': response.email
         },
         {
           'firstName': response.first_name,
@@ -31,25 +33,19 @@ module.exports = {
           'email': response.email,
           'facebookId': response.id
         })
-        .exec(async (err, user, wasCreated) => {
-          if (err) {
+        .exec(async (err, user) => {
+          if (err) { // Return error if any
             return res.serverError(err);
           }
-
-          if (wasCreated) {
-            sails.log('Created a new user: ' + user.firstName);
-          } else {
-            sails.log('Found existing user: ' + user.firstName);
-          }
+          // Set jason web token with the needed information
           var token = jwt.sign({
             'userId': user.id,
             'firstName': user.firstName,
             'lastName': user.lastName,
             'email': user.email
-          }, 'secret', {'expiresIn': 60 * 60 * 24})
-          res.status(200).json(token);
+          }, sails.config.constant.secretToken, {'expiresIn': 60 * 60 * 24})
+          return res.status(200).json(token);
         });
-      // res.send(user)
     });
   }
 
