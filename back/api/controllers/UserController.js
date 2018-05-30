@@ -5,12 +5,19 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-var Facebook = require('fb').Facebook,
+let Facebook = require('fb').Facebook,
   fb = new Facebook({}),
   jwt = require('jsonwebtoken');
 
 module.exports = {
-  socialAuth: function (req, res) {
+
+  /**
+   * @description Authenticate user with facebook api
+   * @param req
+   * @param res
+   * @returns {*}
+   */
+  socialAuth (req, res) {
     fb.setAccessToken(req.param('access_token')) // Get the facebook access token for the user and store it in fb variable
     // facebook api call with the necessary fields
     fb.api('me', {fields: ['id', 'name', 'email', 'first_name', 'last_name']}, response => {
@@ -37,17 +44,17 @@ module.exports = {
           if (err) { // Return error if any
             return res.serverError(err);
           }
-          // Set jason web token with the needed information
+          // Set json web token with the needed information
           var token = jwt.sign({
             'userId': user.id,
             'firstName': user.firstName,
             'lastName': user.lastName,
             'email': user.email
           }, sails.config.constant.secretToken, {'expiresIn': 60 * 60 * 24})
+          // return success status with token
           return res.status(200).json(token);
         });
-    });
+    })
   }
-
 };
 
