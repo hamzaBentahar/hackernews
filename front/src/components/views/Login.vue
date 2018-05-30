@@ -30,20 +30,29 @@
       fbLogin() {
         let that = this
         // Get access token
-        FB.login(function (response) {
+        FB.login(response => {
           // send access token to the backend api
-          axios.post('/auth/facebook', {
-            'access_token': response.authResponse.accessToken
-          })
-            .then(response => {
-              that.login(response.data) // store the jwt in the local storage
-              that.$toasted.show('You have been logged in successfully') // Display notification
-              router.go(-1) // Go to previous page in the app
+          let permissions = response.authResponse.grantedScopes.split(",")
+          if (permissions.includes('email')){
+            axios.post('/auth/facebook', {
+              'access_token': response.authResponse.accessToken
             })
-            .catch(response => {
-              that.errors = []
-              that.errors.push(response.response.data.message) // Display errors
-            })
+              .then(response => {
+                that.login(response.data) // store the jwt in the local storage
+                that.$toasted.show('You have been logged in successfully') // Display notification
+                router.go(-1) // Go to previous page in the app
+              })
+              .catch(response => {
+                that.errors = []
+                that.errors.push(response.response.data.message) // Display errors
+              })
+          } else {
+            this.$toasted.show('Email is required for authentication')
+          }
+        }, {
+          scope: 'public_profile,email',
+          return_scopes: true,
+          auth_type: 'rerequest'
         })
       }
     }

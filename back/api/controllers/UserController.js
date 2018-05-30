@@ -10,26 +10,15 @@ var Facebook = require('fb').Facebook,
   jwt = require('jsonwebtoken');
 
 module.exports = {
-  login: function (req, res) {
-    fb.setAccessToken('EAACbVVy6SsUBAM6H3P5dLUe64kYi0xjLpbZA7eS3aXMEYTIMHZAi5KwfGM4mMNVnldjhphfkQeQIOZAZCBI3senKhAPKQ28vLJrdlPmMMwUe9nSA3gwQukvDpZCtzk7YUTZBXJhZCRd0XL6rqsyzfnsBy9kbKYaRdDSz5PwKlgXWCJjZBPFHJGSS7NMdezy8Tq8PPxmrk1DAqwZDZD')
-
-    fb.api('me', {fields: ['id', 'name', 'email']}, function (res) {
-      if (!res || res.error) {
-        console.log(!res ? 'error occurred' : res.error);
-        return;
-      }
-      console.log(res.id);
-      console.log(res.name);
-      console.log(res.email)
-    });
-
-  },
-
   socialAuth: function (req, res) {
-    fb.setAccessToken(req.param('access_token'))
-    fb.api('me', {fields: ['id', 'name', 'email', 'first_name', 'last_name']}, function (response) {
-      if (!response || response.error || response.email === undefined) {
+    fb.setAccessToken(req.param('access_token')) // Get the facebook access token for the user and store it in fb variable
+    // facebook api call with the necessary attributes
+    fb.api('me', {fields: ['id', 'name', 'email', 'first_name', 'last_name']}, response => {
+      //
+      if (!response || response.error) {
         return res.status(403).send({status: 'error', message: 'An error has occured'})
+      } else if (response.email === undefined){
+        return res.status(403).send({status: 'error', message: 'The email address is required'})
       }
       User.findOrCreate(
         {
